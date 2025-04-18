@@ -7,7 +7,7 @@ long long	time_ms(void)
 
 	gettimeofday(&time, NULL);
 	current_ms = (((long long)time.tv_sec * 1000LL)
-			+ (time.tv_usec / 1000)) % 10000;
+			+ (time.tv_usec / 1000)) ;
 	return (current_ms);
 }
 
