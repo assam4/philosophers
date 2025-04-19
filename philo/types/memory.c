@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memory.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/19 12:29:12 by saslanya          #+#    #+#             */
+/*   Updated: 2025/04/19 12:31:15 by saslanya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "types.h"
 
 long long	time_ms(void)
@@ -7,7 +19,7 @@ long long	time_ms(void)
 
 	gettimeofday(&time, NULL);
 	current_ms = (((long long)time.tv_sec * 1000LL)
-			+ (time.tv_usec / 1000)) ;
+			+ (time.tv_usec / 1000));
 	return (current_ms);
 }
 
