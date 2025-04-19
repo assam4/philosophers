@@ -24,12 +24,12 @@ int	main(int argc, char **argv)
 		return (ENOMEM);
 	set_userdef_params(argc, (const char **)argv, table);
 	philos_init(table);
-	if (init_mutexs(table))
+	if (init_semaphores(table))
 		return (deallocation_mem(&table), EAGAIN);
 	exit_bit = start_simulation(table);
 	if (exit_bit)
 		exit(exit_bit);
-	destroy_mutexs(table);
+	destroy_semaphores(table);
 	deallocation_mem(&table);
-	return (exit_bit);
+	return (EXIT_SUCCESS);
 }

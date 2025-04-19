@@ -9,7 +9,7 @@ SIMUL_DIR = ./simulation/
 
 INCLUDES = -I. -I$(VALID_DIR) -I$(TYPES_DIR) -I$(SIMUL_DIR)
 
-SRCS = $(VALID_DIR)validation.c $(TYPES_DIR)memory.c $(TYPES_DIR)mutex.c \
+SRCS = $(VALID_DIR)validation.c $(TYPES_DIR)memory.c $(TYPES_DIR)semaphore.c \
        $(SIMUL_DIR)actions.c $(SIMUL_DIR)monitoring.c main.c
 
 OBJS = $(SRCS:.c=.o)

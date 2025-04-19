@@ -43,7 +43,7 @@ static int	take_forks(t_philosopher *philo)
 	return (EXIT_SUCCESS);
 }
 
-void	giveup_forks(t_philosopher *philo);
+static void	giveup_forks(t_philosopher *philo);
 
 static void	actions(t_philosopher *philo)
 {
@@ -72,7 +72,7 @@ static void	actions(t_philosopher *philo)
 	print_state(philo, THINKING);
 }
 
-void	giveup_forks(t_philosopher *philo)
+static void	giveup_forks(t_philosopher *philo)
 {
 	if (!(philo->pid % 2))
 	{
