@@ -19,7 +19,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <sys/wait.h>
-# include <semaphore.h>
 
 # define ALLOC_ERR "\033[1;31mFailed attempt at alocation!.\n\033[0m"
 # define MUTEX_ERR "\033[1;31mSystem limit on mutexes reached\n\033[0m"

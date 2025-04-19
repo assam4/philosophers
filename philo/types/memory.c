@@ -48,17 +48,16 @@ void	deallocation_mem(t_table **table)
 
 void	set_userdef_params(int count, const char **params, t_table *table)
 {
-	table->philos_count = ft_atoi(params[1]);
-	table->time_to_die = ft_atoi(params[2]);
-	table->time_to_eat = ft_atoi(params[3]);
-	table->time_to_sleep = ft_atoi(params[4]);
 	if (count == VARG_COUNT2)
-		table->must_eat_count = ft_atoi(params[5]);
+		table->must_eat_count = ft_atoi(params[--count]);
 	else
 		table->must_eat_count = START_VAL;
+	table->time_to_sleep = ft_atoi(params[--count]);
+	table->time_to_eat = ft_atoi(params[--count]);
+	table->time_to_die = ft_atoi(params[--count]);
+	table->philos_count = ft_atoi(params[--count]);
 	table->someone_died = START_VAL;
 	table->fullnes = START_VAL;
-	table->start_time = START_VAL;
 }
 
 void	philos_init(t_table *table)
