@@ -7,45 +7,6 @@ void	print_state(t_philosopher *philo,const char *message)
 	sem_post(philo->table->print);
 }
 
-static int	take_forks(t_philosopher *philo)
-{
-	if (!(philo->number % 2))
-	{
-		usleep(1000);
-		sem_wait(philo->table->forks);
-		print_state(philo, GET_FORK);
-		sem_wait(philo->table->forks);
-		print_state(philo, GET_FORK);
-
-	}
-	else
-	{
-		sem_wait(philo->table->forks);
-		print_state(philo, GET_FORK);
-		if (philo->table->philos_count == 1)
-		{
-			sem_post(philo->table->forks);
-			usleep(philo->table->time_to_die * 1000);
-			print_state(philo, DIED);
-			return (EXIT_FAILURE);
-		}
-		sem_wait(philo->table->forks);
-		print_state(philo, GET_FORK);
-
-	}
-	return (EXIT_SUCCESS);
-}
-
-static void	crossed_target(t_philosopher *philo)
-{
-	if (++philo->eat_count == philo->table->must_eat_count)
-	{
-		sem_wait(philo->table->full);
-		++philo->table->fullnes;
-		sem_post(philo->table->full);
-	}
-}
-
 static void	actions(t_philosopher *philo)
 {
 	long long	time;
@@ -53,19 +14,40 @@ static void	actions(t_philosopher *philo)
 	time = time_ms();
 	print_state(philo, EATING);
 	while (time_ms() - time < philo->table->time_to_eat)
-		usleep(INTERVAL);
-	sem_wait(philo->dead_s);
+		usleep(100);
+	sem_wait(philo->die);
 	philo->last_eat_time = time_ms();
-	sem_post(philo->dead_s);
+	sem_post(philo->die);
 	sem_post(philo->table->forks);
 	sem_post(philo->table->forks);
-	if (philo->table->must_eat_count)
-		crossed_target(philo);
+	sem_post(philo->table->secure_lock);
 	time = time_ms();
 	print_state(philo, SLEEPING);
 	while (time_ms() - time < philo->table->time_to_sleep)
-		usleep(INTERVAL);
+		usleep(100);
 	print_state(philo, THINKING);
+}
+
+static void	*check_is_dead(void *param)
+{
+	t_philosopher	*philo;
+
+	philo = (t_philosopher *)param;
+	while (1)
+	{
+		usleep(INTERVAL);
+		sem_wait(philo->die);
+		if (time_ms() - philo->last_eat_time > philo->table->time_to_die)
+		{
+			print_state(philo, DEAD);
+			sem_post(philo->table->dead_stop);
+			sem_post(philo->die);
+			return (NULL);
+		}
+		else
+			sem_post(philo->die);
+	}
+	return (NULL);
 }
 
 void	*life_cycle(void *param)
@@ -73,17 +55,28 @@ void	*life_cycle(void *param)
 	t_philosopher	*philo;
 
 	philo = (t_philosopher *)param;
+	if (pthread_create(&philo->is_dead, NULL, check_is_dead, param))
+	{
+		sem_post(philo->table->dead_stop);
+		return (NULL);
+	}
 	while (1)
 	{
-		if (take_forks(philo))
+		sem_wait(philo->table->secure_lock);
+		sem_wait(philo->table->forks);
+		print_state(philo, GET_FORK);
+		if (philo->table->philos_count == 1)
 		{
-			sem_post(philo->table->stop);
-			while (wait(NULL) > 0)
-			;
+			sem_post(philo->table->forks);
+			sem_post(philo->table->secure_lock);
+			usleep(philo->table->time_to_die * 1000);
+			print_state(philo, DEAD);
+			sem_post(philo->table->dead_stop);
 			return (NULL);
 		}
-		else
-			actions(philo);
+		sem_wait(philo->table->forks);
+		print_state(philo, GET_FORK);
+		actions(philo);
 	}
 	return (NULL);
 }

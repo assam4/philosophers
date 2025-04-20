@@ -12,6 +12,14 @@
 
 #include "simulation.h"
 
+static void	wait_childs(t_table *table)
+{
+	int	i;
+
+	i = START_VAL;
+	while (i < table->philos_count)
+		waitpid(table->philos[i++].pid, NULL, 0);
+}
 int	main(int argc, char **argv)
 {
 	t_table	*table;
@@ -27,9 +35,8 @@ int	main(int argc, char **argv)
 	if (init_semaphores(table))
 		return (deallocation_mem(&table), EAGAIN);
 	exit_bit = start_simulation(table);
-	if (exit_bit)
-		exit(exit_bit);
+	wait_childs(table);
 	destroy_semaphores(table);
 	deallocation_mem(&table);
-	return (EXIT_SUCCESS);
+	return (exit_bit);
 }
