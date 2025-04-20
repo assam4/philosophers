@@ -27,8 +27,6 @@ int	main(int argc, char **argv)
 	if (init_mutexs(table))
 		return (deallocation_mem(&table), EAGAIN);
 	exit_bit = start_simulation(table);
-	if (exit_bit)
-		exit(exit_bit);
 	destroy_mutexs(table);
 	deallocation_mem(&table);
 	return (exit_bit);

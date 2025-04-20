@@ -11,6 +11,7 @@ static int	take_forks(t_philosopher *philo)
 {
 	if (!(philo->number % 2))
 	{
+		usleep(1000);
 		sem_wait(philo->table->forks);
 		print_state(philo, GET_FORK);
 		sem_wait(philo->table->forks);
@@ -25,7 +26,6 @@ static int	take_forks(t_philosopher *philo)
 		{
 			sem_post(philo->table->forks);
 			usleep(philo->table->time_to_die * 1000);
-			sem_wait(philo->table->stop);
 			print_state(philo, DIED);
 			return (EXIT_FAILURE);
 		}
@@ -55,7 +55,7 @@ static void	actions(t_philosopher *philo)
 	while (time_ms() - time < philo->table->time_to_eat)
 		usleep(INTERVAL);
 	sem_wait(philo->dead_s);
-	philo->last_eat_time = time + philo->table->time_to_eat;
+	philo->last_eat_time = time_ms();
 	sem_post(philo->dead_s);
 	sem_post(philo->table->forks);
 	sem_post(philo->table->forks);
@@ -76,8 +76,14 @@ void	*life_cycle(void *param)
 	while (1)
 	{
 		if (take_forks(philo))
+		{
+			sem_post(philo->table->stop);
+			while (wait(NULL) > 0)
+			;
 			return (NULL);
-		actions(philo);
+		}
+		else
+			actions(philo);
 	}
 	return (NULL);
 }

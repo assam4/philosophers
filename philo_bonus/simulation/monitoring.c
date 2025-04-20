@@ -78,7 +78,7 @@ int	start_simulation(t_table *table)
 		kill(table->pids[i], SIGTERM);
 		++i;
 	}
-	while (wait(NULL))
+	while (wait(NULL) >= 0)
 	{ }
 	return (EXIT_SUCCESS);
 }

@@ -1,7 +1,7 @@
 NAME = philo_bonus
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread #only with clang
+CC = clang
+CFLAGS = -Wall -Wextra -Werror -fsanitize=thread #only with clang
 
 VALID_DIR = ./validation/
 TYPES_DIR = ./types/

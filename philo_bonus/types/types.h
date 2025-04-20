@@ -14,12 +14,11 @@
 # define ALLOC_ERR "\033[1;31mFailed attempt at alocation!.\n\033[0m"
 # define SEM_ERR "\033[1;31mFailed to open semaphore!.\n\033[0m"
 
-# define FORKS "forks"
 # define PRINT "print"
-# define STOP "stop"
-# define FULL "full"
-# define DIED_S "died_sem_"
-
+# define DEAD "someone dead"
+# define FULL "all fullnes"
+# define SECURE "secure_dead_locks"
+# define FORKS "forks"
 typedef struct s_table	t_table;
 
 typedef struct s_philosopher
@@ -28,9 +27,8 @@ typedef struct s_philosopher
 	int			eat_count;
 	long long	last_eat_time;
 	pid_t		pid;
+	pthread_t	dead_check;
 	t_table		*table;
-	sem_t		*dead_s;
-	pthread_t	die_m;
 }	t_philosopher;
 
 typedef struct s_table
@@ -40,21 +38,14 @@ typedef struct s_table
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat_count;
-	int				fullnes;
+	int				fullnes_philos;
 	long long		start_time;
-	pid_t			*pids;
-	t_philosopher	*philos;
-	sem_t			*forks;
 	sem_t			*print;
-	sem_t			*stop;
-	sem_t			*full;
+	sem_t			*dead_stop;
+	sem_t			*full_stop;
+	sem_t			*secure_lock;
+	sem_t			*forks;
+	t_philosopher	*philos;
 }	t_table;
 
-long long	time_ms(void);
-int			allocation_mem(int count, t_table **table);
-void		deallocation_mem(t_table **table);
-void		set_userdef_params(int count, const char **params, t_table *table);
-void		philos_init(t_table *table);
-int	init_semaphores(t_table *table);
-void	destroy_semaphores(t_table *table);
 #endif

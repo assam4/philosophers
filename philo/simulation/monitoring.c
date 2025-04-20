@@ -109,7 +109,7 @@ int	start_simulation(t_table *table)
 
 	table->start_time = time_ms();
 	if (create_threads(table, &die_t, &eat_t))
-		exit(EAGAIN);
+		return (EAGAIN);
 	i = LOOP_START;
 	while (i < table->philos_count)
 	{
