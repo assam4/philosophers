@@ -62,6 +62,8 @@ Each philosopher continuously performs the following steps:
 ```bash
 make
 
+---
+
 ## Example Execution
 
 ````bash
