@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:51 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/19 12:29:53 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:48:33 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	*lifecycle(void *param)
 			return (pthread_mutex_unlock(&philo->table->dead_m), NULL);
 		pthread_mutex_unlock(&philo->table->dead_m);
 		if (take_forks(philo))
-			usleep(philo->table->time_to_die * ML_TO_MK);
+			usleep((philo->table->time_to_die + 1) * ML_TO_MK);
 		else
 			actions(philo);
 	}

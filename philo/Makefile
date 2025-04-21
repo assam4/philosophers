@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address #only with clang
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address #only with clang
 
 VALID_DIR = ./validation/
 TYPES_DIR = ./types/
