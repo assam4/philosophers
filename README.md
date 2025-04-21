@@ -57,7 +57,44 @@ Each philosopher continuously performs the following steps:
 
 ---
 
-## 🛠️ Compilation
+## Compilation
 
 ```bash
 make
+
+## Example Execution
+
+````bash
+./philo 5 800 200 200
+
+Arguments:
+
+number_of_philosophers
+
+time_to_die (ms)
+
+time_to_eat (ms)
+
+time_to_sleep (ms)
+
+[number_of_times_each_philosopher_must_eat] (optional)
+
+🎁 ## Bonus Version
+The bonus version of the project uses multiprocessing with POSIX semaphores instead of threads and mutexes.
+
+Key Differences and Features:
+👥 Processes instead of threads: Each philosopher runs in its own process using fork().
+
+🔐 Semaphores for synchronization:
+
+sem_open, sem_wait, sem_post are used to control access to forks, printing, and termination.
+
+Named semaphores allow inter-process communication and coordination.
+
+🧠 Dedicated monitoring threads inside each process to check for starvation.
+
+📦 Must-eat feature support: stops simulation after each philosopher has eaten a given number of times.
+
+🧼 Proper cleanup of semaphores and child processes to prevent leaks or zombie processes.
+
+This version demonstrates a deeper understanding of concurrency, inter-process communication (IPC), and synchronization mechanisms in Unix-like systems.
