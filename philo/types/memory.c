@@ -18,8 +18,8 @@ long long	time_ms(void)
 	long long		current_ms;
 
 	gettimeofday(&time, NULL);
-	current_ms = (((long long)time.tv_sec * 1000LL)
-			+ (time.tv_usec / 1000));
+	current_ms = (((long long)time.tv_sec * ML_TO_MK)
+			+ (time.tv_usec / ML_TO_MK));
 	return (current_ms);
 }
 

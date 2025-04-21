@@ -16,10 +16,14 @@ static void	wait_childs(t_table *table)
 {
 	int	i;
 
-	i = START_VAL;
+	i = LOOP_START;
 	while (i < table->philos_count)
-		waitpid(table->philos[i++].pid, NULL, 0);
+	{
+		waitpid(table->philos[i].pid, NULL, START_VAL);
+		++i;
+	}
 }
+
 int	main(int argc, char **argv)
 {
 	t_table	*table;

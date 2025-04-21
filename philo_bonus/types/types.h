@@ -19,6 +19,9 @@
 # define FULL "all fullnes"
 # define SECURE "secure_dead_locks"
 # define FORKS "forks"
+
+# define ML_TO_MK 1000
+
 typedef struct s_table	t_table;
 
 typedef struct s_philosopher
@@ -47,15 +50,15 @@ typedef struct s_table
 	sem_t			*secure_lock;
 	sem_t			*forks;
 	t_philosopher	*philos;
-	pthread_t	dead_m;
-	pthread_t	eat_m;
+	pthread_t		dead_m;
+	pthread_t		eat_m;
 }	t_table;
 
-long long       time_ms(void);
-int     allocation_mem(int count, t_table **table);
-void    deallocation_mem(t_table **table);
-void    set_userdef_params(int count, const char **params, t_table *table);
-void    philos_init(t_table *table);
-void    destroy_semaphores(t_table *table);
-int     init_semaphores(t_table *table);
+long long	time_ms(void);
+int			allocation_mem(int count, t_table **table);
+void		deallocation_mem(t_table **table);
+void		set_userdef_params(int count, const char **params, t_table *table);
+void		philos_init(t_table *table);
+void		destroy_semaphores(t_table *table);
+int			init_semaphores(t_table *table);
 #endif

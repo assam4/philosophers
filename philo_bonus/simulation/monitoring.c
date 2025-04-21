@@ -2,14 +2,17 @@
 
 static void	*die_monitoring(void *param)
 {
-	int	i;
+	int		i;
 	t_table	*table;
 
-	i = START_VAL;
+	i = LOOP_START;
 	table = (t_table *)param;
 	sem_wait(table->dead_stop);
 	while (i < table->philos_count)
-		kill(table->philos[i++].pid, SIGKILL);
+	{
+		kill(table->philos[i].pid, SIGKILL);
+		++i;
+	}
 	exit(EXIT_SUCCESS);
 }
 
@@ -25,7 +28,6 @@ static void	*eat_monitoring(void *param)
 		{
 			sem_wait(table->print);
 			printf(DINNER_OVER, time_ms() - table->start_time);
-			sem_post(table->print);
 			sem_post(table->dead_stop);
 			break ;
 		}
@@ -37,7 +39,7 @@ static int	create_forks(t_table *table)
 {
 	int	i;
 
-	i = START_VAL;
+	i = LOOP_START;
 	while (i < table->philos_count)
 	{
 		table->philos[i].pid = fork();

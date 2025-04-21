@@ -2,9 +2,9 @@
 
 static char	*convert_to_str(int num)
 {
-	int	len;
-	int	i;
-	int	num_cpy;
+	int		len;
+	int		i;
+	int		num_cpy;
 	char	*str;
 
 	len = 1;
@@ -12,19 +12,16 @@ static char	*convert_to_str(int num)
 	while (num)
 	{
 		++len;
-		num /= 10;
+		num /= DECIMAL;
 	}
 	str = malloc(len * sizeof(char));
 	if (!str)
-	{
-		printf(ALLOC_ERR);
-		exit(ENOMEM);
-	}
-	i = START_VAL;
+		return (NULL);
+	i = LOOP_START;
 	while (num_cpy)
 	{
-		str[i++] = num_cpy % 10 + '0';
-		num_cpy /= 10;
+		str[i++] = num_cpy % DECIMAL + '0';
+		num_cpy /= DECIMAL;
 	}
 	str[i] = '\0';
 	return (str);
@@ -32,10 +29,10 @@ static char	*convert_to_str(int num)
 
 static void	semaphores_unlink(t_table *table)
 {
-	int	i;
+	int		i;
 	char	*name;
 
-	i = START_VAL;
+	i = LOOP_START;
 	while (i < table->philos_count)
 	{
 		name = convert_to_str(table->philos[i++].number);
@@ -44,7 +41,8 @@ static void	semaphores_unlink(t_table *table)
 	}
 	sem_unlink(PRINT);
 	sem_unlink(DEAD);
-	sem_unlink(FULL);
+	if (table->must_eat_count)
+		sem_unlink(FULL);
 	sem_unlink(SECURE);
 	sem_unlink(FORKS);
 }
@@ -53,11 +51,15 @@ void	destroy_semaphores(t_table *table)
 {
 	int	i;
 
-	i = START_VAL;
+	i = LOOP_START;
 	while (i < table->philos_count)
-		sem_close(table->philos[i++].die);
+	{
+		sem_close(table->philos[i].die);
+		++i;
+	}
 	sem_close(table->dead_stop);
-	sem_close(table->full_stop);
+	if (table->must_eat_count)
+		sem_close(table->full_stop);
 	sem_close(table->secure_lock);
 	sem_close(table->forks);
 	sem_close(table->print);
@@ -66,10 +68,10 @@ void	destroy_semaphores(t_table *table)
 
 static int	init_philos_sem(t_table *table)
 {
-	int	i;
+	int		i;
 	char	*name;
 
-	i = START_VAL;
+	i = LOOP_START;
 	while (i < table->philos_count)
 	{
 		name = convert_to_str(table->philos[i].number);
@@ -93,16 +95,15 @@ int	init_semaphores(t_table *table)
 	else
 		secure_count = table->philos_count / 2;
 	semaphores_unlink(table);
-	table->print = sem_open(PRINT, O_CREAT | O_EXCL , 0644, 1);
+	table->print = sem_open(PRINT, O_CREAT | O_EXCL, 0644, 1);
 	table->dead_stop = sem_open(DEAD, O_CREAT | O_EXCL, 0644, START_VAL);
-	table->full_stop = sem_open(FULL, O_CREAT | O_EXCL, 0644, START_VAL);
+	if (table->must_eat_count)
+		table->full_stop = sem_open(FULL, O_CREAT | O_EXCL, 0644, START_VAL);
 	table->secure_lock = sem_open(SECURE, O_CREAT | O_EXCL, 0644, secure_count);
 	table->forks = sem_open(FORKS, O_CREAT | O_EXCL, 0644, table->philos_count);
-		if (table->forks == SEM_FAILED
-		|| table->print == SEM_FAILED
-		|| table->dead_stop == SEM_FAILED
-		|| table->full_stop == SEM_FAILED
-		|| table->forks == SEM_FAILED
+	if (table->forks == SEM_FAILED || table->print == SEM_FAILED
+		|| table->dead_stop == SEM_FAILED || table->forks == SEM_FAILED
+		|| (1 && (table->must_eat_count && table->full_stop == SEM_FAILED))
 		|| init_philos_sem(table))
 	{
 		destroy_semaphores(table);

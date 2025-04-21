@@ -22,6 +22,7 @@
 
 # define ALLOC_ERR "\033[1;31mFailed attempt at alocation!.\n\033[0m"
 # define MUTEX_ERR "\033[1;31mSystem limit on mutexes reached\n\033[0m"
+# define ML_TO_MK 1000
 
 typedef struct s_table	t_table;
 

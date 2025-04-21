@@ -1,10 +1,16 @@
 #include "simulation.h"
 
-void	print_state(t_philosopher *philo,const char *message)
+void	print_state(t_philosopher *philo, const char *message)
 {
 	sem_wait(philo->table->print);
 	printf(message, time_ms() - philo->table->start_time, philo->number);
 	sem_post(philo->table->print);
+}
+
+static void	must_eat(t_philosopher *philo)
+{
+	if (++philo->eat_count == philo->table->must_eat_count)
+		sem_post(philo->table->full_stop);
 }
 
 static void	actions(t_philosopher *philo)
@@ -14,17 +20,19 @@ static void	actions(t_philosopher *philo)
 	time = time_ms();
 	print_state(philo, EATING);
 	while (time_ms() - time < philo->table->time_to_eat)
-		usleep(100);
+		usleep(INTERVAL);
 	sem_wait(philo->die);
 	philo->last_eat_time = time_ms();
 	sem_post(philo->die);
 	sem_post(philo->table->forks);
 	sem_post(philo->table->forks);
+	if (philo->table->must_eat_count)
+		must_eat(philo);
 	sem_post(philo->table->secure_lock);
 	time = time_ms();
 	print_state(philo, SLEEPING);
 	while (time_ms() - time < philo->table->time_to_sleep)
-		usleep(100);
+		usleep(INTERVAL);
 	print_state(philo, THINKING);
 }
 
@@ -39,7 +47,8 @@ static void	*check_is_dead(void *param)
 		sem_wait(philo->die);
 		if (time_ms() - philo->last_eat_time > philo->table->time_to_die)
 		{
-			print_state(philo, DEAD);
+			print_state(philo, PHILO_DEAD);
+			sem_wait(philo->table->print);
 			sem_post(philo->table->dead_stop);
 			sem_post(philo->die);
 			return (NULL);
@@ -56,10 +65,7 @@ void	*life_cycle(void *param)
 
 	philo = (t_philosopher *)param;
 	if (pthread_create(&philo->is_dead, NULL, check_is_dead, param))
-	{
-		sem_post(philo->table->dead_stop);
-		return (NULL);
-	}
+		return (sem_post(philo->table->dead_stop), NULL);
 	while (1)
 	{
 		sem_wait(philo->table->secure_lock);
@@ -69,7 +75,7 @@ void	*life_cycle(void *param)
 		{
 			sem_post(philo->table->forks);
 			sem_post(philo->table->secure_lock);
-			usleep(philo->table->time_to_die * 1000);
+			usleep(philo->table->time_to_die * ML_TO_MK);
 			print_state(philo, DEAD);
 			sem_post(philo->table->dead_stop);
 			return (NULL);

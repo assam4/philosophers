@@ -24,10 +24,10 @@ static int	check_someone_die(t_table *table, int i)
 		pthread_mutex_lock(&table->print_m);
 		printf(DIED, time_ms() - table->start_time, i + 1);
 		pthread_mutex_unlock(&table->print_m);
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	pthread_mutex_unlock(&table->time_m);
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 static void	*die_monitoring(void *param)
@@ -94,7 +94,7 @@ static int	create_threads(t_table *table, pthread_t *die_t, pthread_t *eat_t)
 	while (i < table->philos_count)
 	{
 		if (pthread_create(&table->philos[i].thread, NULL,
-				&lifecycle, (void *)&(table->philos[i])) != 0)
+				&lifecycle, (void *)&(table->philos[i])))
 			return (EAGAIN);
 		++i;
 	}

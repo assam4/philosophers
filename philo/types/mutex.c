@@ -21,7 +21,8 @@ static int	init_monitoring_m(t_table *table)
 	if (pthread_mutex_init(&table->dead_m, NULL))
 		return (pthread_mutex_destroy(&table->print_m)
 			, pthread_mutex_destroy(&table->time_m), EAGAIN);
-	if (pthread_mutex_init(&table->fullnes_m, NULL))
+	if (table->must_eat_count
+		&& pthread_mutex_init(&table->fullnes_m, NULL))
 		return (pthread_mutex_destroy(&table->print_m)
 			, pthread_mutex_destroy(&table->time_m)
 			, pthread_mutex_destroy(&table->dead_m), EAGAIN);
@@ -48,7 +49,8 @@ int	init_mutexs(t_table *table)
 		pthread_mutex_destroy(&table->print_m);
 		pthread_mutex_destroy(&table->time_m);
 		pthread_mutex_destroy(&table->dead_m);
-		pthread_mutex_destroy(&table->fullnes_m);
+		if (table->must_eat_count)
+			pthread_mutex_destroy(&table->fullnes_m);
 		return (printf(MUTEX_ERR), EAGAIN);
 	}
 	return (EXIT_SUCCESS);
@@ -61,7 +63,8 @@ void	destroy_mutexs(t_table *table)
 	pthread_mutex_destroy(&table->print_m);
 	pthread_mutex_destroy(&table->time_m);
 	pthread_mutex_destroy(&table->dead_m);
-	pthread_mutex_destroy(&table->fullnes_m);
+	if (table->must_eat_count)
+		pthread_mutex_destroy(&table->fullnes_m);
 	i = LOOP_START;
 	while (i < table->philos_count)
 	{

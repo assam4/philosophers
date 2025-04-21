@@ -98,7 +98,7 @@ void	*lifecycle(void *param)
 			return (pthread_mutex_unlock(&philo->table->dead_m), NULL);
 		pthread_mutex_unlock(&philo->table->dead_m);
 		if (take_forks(philo))
-			usleep(philo->table->time_to_die * 1000);
+			usleep(philo->table->time_to_die * ML_TO_MK);
 		else
 			actions(philo);
 	}

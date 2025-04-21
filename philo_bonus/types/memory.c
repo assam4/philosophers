@@ -6,8 +6,8 @@ long long	time_ms(void)
 	long long		current_ms;
 
 	gettimeofday(&time, NULL);
-	current_ms = (((long long)time.tv_sec * 1000LL)
-			+ (time.tv_usec / 1000));
+	current_ms = (((long long)time.tv_sec * ML_TO_MK)
+			+ (time.tv_usec / ML_TO_MK));
 	return (current_ms);
 }
 
@@ -48,8 +48,8 @@ void	philos_init(t_table *table)
 	int	i;
 
 	table->start_time = time_ms();
-	i = START_VAL;
-	while ( i < table->philos_count)
+	i = LOOP_START;
+	while (i < table->philos_count)
 	{
 		table->philos[i].number = i + 1;
 		table->philos[i].eat_count = START_VAL;
