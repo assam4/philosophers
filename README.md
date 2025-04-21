@@ -61,13 +61,12 @@ Each philosopher continuously performs the following steps:
 
 ```bash
 make
-
----
-
+```
 ## Example Execution
 
 ````bash
 ./philo 5 800 200 200
+````
 
 Arguments:
 
@@ -81,7 +80,7 @@ time_to_sleep (ms)
 
 [number_of_times_each_philosopher_must_eat] (optional)
 
-🎁 ## Bonus Version
+🎁 ## philo_bonus
 The bonus version of the project uses multiprocessing with POSIX semaphores instead of threads and mutexes.
 
 Key Differences and Features:
@@ -100,3 +99,9 @@ Named semaphores allow inter-process communication and coordination.
 🧼 Proper cleanup of semaphores and child processes to prevent leaks or zombie processes.
 
 This version demonstrates a deeper understanding of concurrency, inter-process communication (IPC), and synchronization mechanisms in Unix-like systems.
+
+## Example Execution
+
+````bash
+./philo_bonus 5 800 200 200
+````
