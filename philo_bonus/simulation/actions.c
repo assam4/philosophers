@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:35:41 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/21 18:35:43 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:01:30 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ static void	*check_is_dead(void *param)
 		sem_wait(philo->die);
 		if (time_ms() - philo->last_eat_time > philo->table->time_to_die)
 		{
-			print_state(philo, PHILO_DEAD);
 			sem_wait(philo->table->print);
+			printf(PHILO_DEAD,
+				time_ms() - philo->table->start_time, philo->number);
 			sem_post(philo->table->dead_stop);
 			sem_post(philo->die);
 			return (NULL);
