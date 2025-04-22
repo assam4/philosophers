@@ -80,13 +80,13 @@ time_to_sleep (ms)
 
 [number_of_times_each_philosopher_must_eat] (optional)
 
-🎁 ## philo_bonus
+## philo_bonus
 The bonus version of the project uses multiprocessing with POSIX semaphores instead of threads and mutexes.
 
 Key Differences and Features:
 👥 Processes instead of threads: Each philosopher runs in its own process using fork().
 
-🔐 Semaphores for synchronization:
+### 🔐 Semaphores for synchronization:
 
 sem_open, sem_wait, sem_post are used to control access to forks, printing, and termination.
 
