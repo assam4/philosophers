@@ -25,6 +25,8 @@ static void	*die_monitoring(void *param)
 		kill(table->philos[i].pid, SIGKILL);
 		++i;
 	}
+	destroy_semaphores(table);
+	deallocation_mem(&table);
 	exit(EXIT_SUCCESS);
 }
 
@@ -72,6 +74,7 @@ int	start_simulation(t_table *table)
 	pthread_create(&(table->dead_m), NULL, die_monitoring, table);
 	if (table->must_eat_count)
 	{
+		table->fullnes_philos = START_VAL;
 		pthread_create(&(table->eat_m), NULL, eat_monitoring, table);
 		pthread_join(table->eat_m, NULL);
 	}
