@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:57 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/19 12:29:59 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/06/10 23:31:35 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	check_someone_die(t_table *table, int i)
 {
 	pthread_mutex_lock(&table->time_m);
-	if (time_ms() - table->philos[i].last_eat_time > table->time_to_die)
+	if (time_ms() - table->philos[i].last_eat_time - 1 > table->time_to_die)
 	{
 		pthread_mutex_unlock(&table->time_m);
 		pthread_mutex_lock(&table->dead_m);

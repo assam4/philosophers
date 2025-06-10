@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:51 by saslanya          #+#    #+#             */
-/*   Updated: 2025/06/10 00:40:14 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/06/10 23:35:47 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ static void	actions(t_philosopher *philo)
 {
 	long long	time_start;
 
-	pthread_mutex_lock(&philo->table->time_m);
-	philo->last_eat_time = time_ms();
-	pthread_mutex_unlock(&philo->table->time_m);
 	print_state(philo, EATING);
 	time_start = time_ms();
+	pthread_mutex_lock(&philo->table->time_m);
+	philo->last_eat_time = time_ms() + philo->table->time_to_eat;
+	pthread_mutex_unlock(&philo->table->time_m);
 	while (time_ms() - time_start < philo->table->time_to_eat)
 		usleep(INTERVAL);
 	++philo->meals_eaten;
@@ -84,9 +84,6 @@ static void	giveup_forks(t_philosopher *philo)
 		pthread_mutex_unlock(philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
 	}
-	pthread_mutex_lock(&philo->table->time_m);
-	philo->last_eat_time = time_ms();
-	pthread_mutex_unlock(&philo->table->time_m);
 }
 
 void	*lifecycle(void *param)
