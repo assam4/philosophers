@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:35:41 by saslanya          #+#    #+#             */
-/*   Updated: 2025/06/11 00:45:50 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/06/11 00:59:45 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ static void	actions(t_philosopher *philo)
 {
 	long long	time;
 
-	print_state(philo, EATING);
 	time = time_ms();
 	sem_wait(philo->die);
 	philo->last_eat_time = time_ms();
 	sem_post(philo->die);
+	print_state(philo, EATING);
 	while (time_ms() - time < philo->table->time_to_eat)
 		usleep(INTERVAL);
 	sem_post(philo->table->forks);
@@ -56,7 +56,8 @@ static void	*check_is_dead(void *param)
 	{
 		usleep(INTERVAL);
 		sem_wait(philo->die);
-		if (time_ms() - philo->last_eat_time - 2 > philo->table->time_to_die)
+		if (time_ms() - philo->last_eat_time
+			- COMPRESSOR > philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print);
 			printf(PHILO_DEAD,

@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:35:33 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/21 19:00:27 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/06/11 00:59:18 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <fcntl.h>  // для O_CREAT и O_EXCL
 
 # define INTERVAL 100
+# define COMPRESSOR 2
 
 # define THREAD_ERR "\033[31mError creating thread\n\033[0m"
 # define FORK_ERR "\033[31mError creating process\n\033[0m"
