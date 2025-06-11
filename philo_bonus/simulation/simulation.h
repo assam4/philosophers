@@ -14,7 +14,6 @@
 # define SIMULATION_H
 
 # include "types.h"
-# include <fcntl.h>
 
 # define INTERVAL 100
 # define COMPRESSOR 2
