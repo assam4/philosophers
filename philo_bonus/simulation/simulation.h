@@ -14,7 +14,7 @@
 # define SIMULATION_H
 
 # include "types.h"
-# include <fcntl.h>  // для O_CREAT и O_EXCL
+# include <fcntl.h>
 
 # define INTERVAL 100
 # define COMPRESSOR 2
