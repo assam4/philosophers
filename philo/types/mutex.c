@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:18 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/19 12:29:20 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:42:54 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,21 @@ void	destroy_mutexs(t_table *table)
 		pthread_mutex_destroy(&table->forks[i]);
 		++i;
 	}
+}
+
+void	join_threads(t_table *table, int i,
+			pthread_t **monitorings, int is_kill)
+{
+	if (is_kill)
+	{
+		pthread_mutex_lock(&table->dead_m);
+		table->someone_died = 1;
+		pthread_mutex_unlock(&table->dead_m);
+	}
+	while (--i > -1)
+		pthread_join(table->philos[i].thread, NULL);
+	if (monitorings[0])
+		pthread_join(*monitorings[0], NULL);
+	if (monitorings[1])
+		pthread_join(*monitorings[1], NULL);
 }

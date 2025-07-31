@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:05 by saslanya          #+#    #+#             */
-/*   Updated: 2025/04/19 12:29:07 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:24:45 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,7 @@ void		philos_init(t_table *table);
 // mutex utils
 int			init_mutexs(t_table *table);
 void		destroy_mutexs(t_table *table);
+void		join_threads(t_table *table, int i,
+				pthread_t **monitorings, int is_kill);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: saslanya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 12:29:57 by saslanya          #+#    #+#             */
-/*   Updated: 2025/06/10 23:31:35 by saslanya         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:00:07 by saslanya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +83,27 @@ static void	*satiated_monitoring(void *param)
 
 static int	create_threads(t_table *table, pthread_t *die_t, pthread_t *eat_t)
 {
-	int	i;
+	int			i;
+	pthread_t	*monitorings[2];
 
+	monitorings[0] = NULL;
+	monitorings[1] = NULL;
+	i = LOOP_START;
 	if (pthread_create(die_t, NULL, die_monitoring, (void *)table))
 		return (EAGAIN);
-	if (table->must_eat_count
-		&& pthread_create(eat_t, NULL, satiated_monitoring, (void *)table))
-		return (EAGAIN);
-	i = LOOP_START;
+	monitorings[0] = die_t;
+	if (table->must_eat_count)
+	{
+		if (pthread_create(eat_t, NULL, satiated_monitoring, (void *)table))
+			return (join_threads(table, i, monitorings, 1), EAGAIN);
+		else
+			monitorings[1] = eat_t;
+	}
 	while (i < table->philos_count)
 	{
 		if (pthread_create(&table->philos[i].thread, NULL,
 				&lifecycle, (void *)&(table->philos[i])))
-			return (EAGAIN);
+			return (join_threads(table, i, monitorings, 1), EAGAIN);
 		++i;
 	}
 	return (EXIT_SUCCESS);
@@ -105,19 +113,15 @@ int	start_simulation(t_table *table)
 {
 	pthread_t	die_t;
 	pthread_t	eat_t;
-	int			i;
 
 	table->start_time = time_ms();
 	if (create_threads(table, &die_t, &eat_t))
 		return (EAGAIN);
-	i = LOOP_START;
-	while (i < table->philos_count)
-	{
-		pthread_join(table->philos[i].thread, NULL);
-		++i;
-	}
-	pthread_join(die_t, NULL);
 	if (table->must_eat_count)
-		pthread_join(eat_t, NULL);
+		join_threads(table, table->philos_count,
+			(pthread_t *[]){&die_t, &eat_t}, 0);
+	else
+		join_threads(table, table->philos_count,
+			(pthread_t *[]){&die_t, NULL}, 0);
 	return (EXIT_SUCCESS);
 }
